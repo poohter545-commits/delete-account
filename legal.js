@@ -12,9 +12,9 @@ if (deleteAccountForm) {
   };
 
   const buildMailto = (payload) => {
-    const subject = "Poohter Seller account deletion request";
+    const subject = "Poohter Buyer account deletion request";
     const body = [
-      "Please delete my Poohter Seller account.",
+      "Please delete my Poohter Buyer account.",
       "",
       `Name: ${payload.name || ""}`,
       `Email: ${payload.email || ""}`,
@@ -30,11 +30,11 @@ if (deleteAccountForm) {
 
     const formData = new FormData(deleteAccountForm);
     const payload = Object.fromEntries(formData.entries());
-    payload.accountType = "seller";
+    payload.accountType = "buyer";
     payload.confirmed = deleteAccountForm.elements.confirmed.checked;
 
     if (!payload.email) {
-      setStatus("Enter the email address for your Poohter Seller account.", "error");
+      setStatus("Enter the email address for your Poohter Buyer account.", "error");
       return;
     }
 
