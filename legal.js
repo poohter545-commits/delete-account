@@ -5,6 +5,19 @@ if (deleteAccountForm) {
   const SUPPORT_EMAIL = "support@poohter.com";
   const statusEl = document.querySelector("#deleteRequestStatus");
   const mailLink = document.querySelector("#deleteMailLink");
+  const accountTypeEl = deleteAccountForm.querySelector("#accountType");
+  const emailLabelEl = deleteAccountForm.querySelector("#emailLabel");
+  const confirmTextEl = deleteAccountForm.querySelector("#confirmText");
+  const emailInput = deleteAccountForm.elements.email;
+
+  const accountLabel = (type) => (type === "seller" ? "Seller" : "Buyer");
+
+  const updateAccountCopy = () => {
+    const label = accountLabel(accountTypeEl.value);
+    emailLabelEl.textContent = `${label} account email`;
+    confirmTextEl.textContent = `I confirm that I want to request deletion of my Poohter ${label} account.`;
+    emailInput.placeholder = `${label.toLowerCase()}@example.com`;
+  };
 
   const setStatus = (message, type = "") => {
     statusEl.textContent = message;
@@ -12,10 +25,12 @@ if (deleteAccountForm) {
   };
 
   const buildMailto = (payload) => {
-    const subject = "Poohter Buyer account deletion request";
+    const label = accountLabel(payload.accountType);
+    const subject = `Poohter ${label} account deletion request`;
     const body = [
-      "Please delete my Poohter Buyer account.",
+      `Please delete my Poohter ${label} account.`,
       "",
+      `Account type: ${label}`,
       `Name: ${payload.name || ""}`,
       `Email: ${payload.email || ""}`,
       `Phone: ${payload.phone || ""}`,
@@ -30,11 +45,11 @@ if (deleteAccountForm) {
 
     const formData = new FormData(deleteAccountForm);
     const payload = Object.fromEntries(formData.entries());
-    payload.accountType = "buyer";
+    payload.accountType = payload.accountType === "seller" ? "seller" : "buyer";
     payload.confirmed = deleteAccountForm.elements.confirmed.checked;
 
     if (!payload.email) {
-      setStatus("Enter the email address for your Poohter Buyer account.", "error");
+      setStatus(`Enter the email address for your Poohter ${accountLabel(payload.accountType)} account.`, "error");
       return;
     }
 
@@ -60,4 +75,7 @@ if (deleteAccountForm) {
       );
     }
   });
+
+  accountTypeEl.addEventListener("change", updateAccountCopy);
+  updateAccountCopy();
 }
